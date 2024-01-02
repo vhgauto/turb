@@ -19,6 +19,7 @@ import certifi
 # lectura de JSON, se usa al obtener el token
 import json
 
+from pathlib import Path
 
 # base URL of the product catalogue
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
@@ -73,5 +74,5 @@ while response.status_code in (301, 302, 303, 307):
 file = session.get(url, verify=False, allow_redirects=True)
 
 # Save the product in home directory
-outfile =  "MTD_MSIL1C.xml"
+outfile =  Path("MTD_MSIL1C.xml")
 outfile.write_bytes(file.content)
