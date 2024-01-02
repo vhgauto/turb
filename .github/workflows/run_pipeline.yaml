@@ -15,7 +15,10 @@ jobs:
       - run: echo "🔎 El nombre del branch es ${{ github.ref }} y su repositorio es ${{ github.repository }}"
       - name: Verificar el código del repositorio
         uses: actions/checkout@v3
-      - uses: s-weigand/setup-conda@v1
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: turb
+          environment-file: environment.yml
       - run: echo "💡 El repositorio ${{ github.repository }} ha sido clonado en el runner"
       - run: echo "🖥️ Las secuencias están listas para chequear su código en el runner"
       - name: secuencia Snakemake
