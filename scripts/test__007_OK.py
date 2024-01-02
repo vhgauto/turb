@@ -8,5 +8,5 @@ username = os.environ['S2MSI_USERNAME']
 password = os.environ['S2MSI_PASSWORD']
 
 
-print(username)
-print(password)
+print('username', username)
+print('password', password)
