@@ -23,13 +23,9 @@ jobs:
           activate-environment: turb
           environment-file: environment.yml
           auto-activate-base: false
-      - name: secuencia Snakemake
-        uses: snakemake/snakemake-github-action@v1
-        with:
-          directory: '.'
-          snakefile: 'Snakefile'
-          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
-          stagein: '' # additional preliminary commands to run (can be multiline)}
+      - name: corro SNAKEMAKE
+        run: |
+          snakemake --cores 1
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
