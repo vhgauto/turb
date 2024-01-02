@@ -15,7 +15,7 @@ jobs:
       - run: echo "🔎 El nombre del branch es ${{ github.ref }} y su repositorio es ${{ github.repository }}"
       - name: Verificar el código del repositorio
         uses: actions/checkout@v3
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: turb
           environment-file: environment.yml
