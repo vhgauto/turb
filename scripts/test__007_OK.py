@@ -19,32 +19,39 @@ import certifi
 # lectura de JSON, se usa al obtener el token
 import json
 
+# para guardar archivo XML
 from pathlib import Path
 
-# base URL of the product catalogue
+# URL base del catálogo
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
-# search parameters
-collection_name = "SENTINEL-2"
-product_type = "S2MSI1C"
-max_cloud_cover = 1
-aoi = "POLYGON((20.888443 52.169721,21.124649 52.169721,21.124649 52.271099,20.888443 52.271099,20.888443 52.169721))"
-search_period_start = "2023-06-01T00:00:00.000Z"
-search_period_end = "2023-06-10T00:00:00.000Z"
+# fechas para la búsqueda de productos
+# fecha_i = datetime.today().strftime('%Y-%m-%d')
+# fecha_f = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
 
+fecha_i = "2023-12-17"
+fecha_f = "2023-12-18"
+
+# parámetros de búsqueda: S2, L2A, cobertura de nubes, ROI, rango de fechas
+collection_name = "SENTINEL-2"
+product_type = "S2MSI2A"
+max_cloud_cover = 1
+aoi = "POINT(-58.81348666883592 -27.488354054598737)"
+search_period_start = f"{fecha_i}T00:00:00.000Z"
+search_period_end = f"{fecha_f}T00:00:00.000Z"
+
+# término de búsqueda
 search_query = f"{catalogue_odata_url}/Products?$filter=Collection/Name eq '{collection_name}' and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq '{product_type}') and OData.CSC.Intersects(area=geography'SRID=4326;{aoi}') and ContentDate/Start gt {search_period_start} and ContentDate/Start lt {search_period_end}"
 
-print(f"""\n{search_query.replace(' ', "%20")}\n""")
-
+# respuesta del servidor y resultado
 response = requests.get(search_query).json()
 result = pd.DataFrame.from_dict(response["value"])
 
-# print first 3 results
-result.head(3)
-
+# credenciales
 username = os.environ['S2MSI_USERNAME']
 password = os.environ['S2MSI_PASSWORD']
 
+# obtengo el token
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
 data = {
     "client_id": "cdse-public",
@@ -53,19 +60,22 @@ data = {
     "password": password,
 }
 
-response = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
-access_token = json.loads(response.text)["access_token"]
+response_cred = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
+access_token = json.loads(response_cred.text)["access_token"]
 
 # Select identifier of the first product
 product_identifier = result.iloc[0, 1]
 product_name = result.iloc[0, 2]
+
+print(product_identifier)
+print(product_name)
 
 # Establish session
 session = requests.Session()
 session.headers["Authorization"] = f"Bearer {access_token}"
 
 # Nodes() method lets us traverse the directory tree and retrieve single file from the product
-url = f"{catalogue_odata_url}/Products({product_identifier})/Nodes({product_name})/Nodes(MTD_MSIL1C.xml)/$value"
+url = f"{catalogue_odata_url}/Products({product_identifier})/Nodes({product_name})/Nodes(MTD_MSIL2A.xml)/$value"
 response = session.get(url, allow_redirects=False)
 while response.status_code in (301, 302, 303, 307):
     url = response.headers["Location"]
@@ -74,5 +84,5 @@ while response.status_code in (301, 302, 303, 307):
 file = session.get(url, verify=False, allow_redirects=True)
 
 # Save the product in home directory
-outfile =  Path("MTD_MSIL1C.xml")
+outfile =  Path("MTD_MSIL2A.xml")
 outfile.write_bytes(file.content)
