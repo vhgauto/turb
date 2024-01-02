@@ -16,8 +16,15 @@ jobs:
       - name: Verificar el código del repositorio
         uses: actions/checkout@v3
       - uses: s-weigand/setup-conda@v1
-      - run: conda --version
-      - run: which python
+      - run: echo "💡 El repositorio ${{ github.repository }} ha sido clonado en el runner"
+      - run: echo "🖥️ Las secuencias están listas para chequear su código en el runner"
+      - name: secuencia Snakemake
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.'
+          snakefile: 'Snakefile'
+          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+          stagein: '' # additional preliminary commands to run (can be multiline)}
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
