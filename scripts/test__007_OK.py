@@ -105,6 +105,6 @@ producto_nombre = result["Name"][0]
 
 # In[8]:
 
-result.to_csv("resultados.csv")
+result.to_csv("salida/resultados.csv")
 
 

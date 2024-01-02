@@ -4,12 +4,12 @@ rule targets:
 
 rule test_secreto:
     input:
-        script = "scripts/test__007_OK.py"
+        script = "scripts/run.bash"
     output:
-        "resultados.csv"
+        "salida/resultados.csv"
     conda:
         "environment.yml"
     shell:
         """
-        python {input.script}
+        {input.script}
         """
