@@ -25,7 +25,7 @@ jobs:
           auto-activate-base: false
       - name: corro SNAKEMAKE
         run: |
-          snakemake --cores 1
+          snakemake -c 1
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
