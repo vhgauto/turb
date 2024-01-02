@@ -24,5 +24,4 @@ jobs:
           environment-file: environment.yml
           auto-activate-base: false
       - run: |
-          conda info
-          conda list
+          python scripts/test__007_OK.py
