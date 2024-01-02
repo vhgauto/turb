@@ -1,0 +1,9 @@
+name: turb
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - requests=2.31.0
+  - pandas=2.1.4
+  - certifi=2023.11.17
+  - snakemake=8.0.1
