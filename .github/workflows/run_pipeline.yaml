@@ -25,3 +25,13 @@ jobs:
           auto-activate-base: false
       - run: |
           python scripts/test__007_OK.py
+      - name: Configuro git en el runner
+        run: |
+          git config --local user.email "noreply@github.com"
+          git config --local user.name "GitHub"
+      - name: Commit de los cambios en el repositorio
+        run: |
+          git add .
+          git commit -m "Última valor de turbidez estimada"
+          git push origin main
+      - run: echo "🍏 El estado final es = ${{ job.status }}."
