@@ -1,0 +1,26 @@
+Building DAG of jobs...
+Retrieving input from storage.
+Using shell: /usr/bin/bash
+Provided cores: 1 (use --cores to define parallelism)
+Rules claiming more threads will be scaled down.
+Conda environments: ignored
+Job stats:
+job        count
+-------  -------
+targets        1
+total          1
+
+Select jobs to execute...
+Execute 1 jobs...
+
+[Tue Jan  2 11:40:15 2024]
+localrule targets:
+    input: scripts/test__007_OK.py
+    jobid: 0
+    reason: Forced execution
+    resources: tmpdir=/tmp
+
+[Tue Jan  2 11:40:15 2024]
+Finished job 0.
+1 of 1 steps (100%) done
+Complete log: .snakemake/log/2024-01-02T114015.187204.snakemake.log

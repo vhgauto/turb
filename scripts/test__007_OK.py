@@ -112,7 +112,6 @@ producto_nombre = result["Name"][0]
 
 # In[8]:
 
-print(producto_id)
-print(producto_nombre)
+result.to_csv("resultados.csv")
 
 
