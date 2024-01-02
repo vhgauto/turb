@@ -18,13 +18,16 @@ jobs:
       - run: echo "💡 El repositorio ${{ github.repository }} ha sido clonado en el runner"
       - run: echo "🖥️ Las secuencias están listas para chequear su código en el runner"
       - uses: actions/setup-python@v5
-      - name: secuencia Snakemake
-        uses: snakemake/snakemake-github-action@v1
         with:
-          directory: '.'
-          snakefile: 'Snakefile'
-          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
-          stagein: '' # additional preliminary commands to run (can be multiline)}
+          python-version: '3.10'
+      # - name: secuencia Snakemake
+      #   uses: snakemake/snakemake-github-action@v1
+      #   with:
+      #     directory: '.'
+      #     snakefile: 'Snakefile'
+      #     args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+      #     stagein: '' # additional preliminary commands to run (can be multiline)}
+      - run: python scripts/test__007_OK.py
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
