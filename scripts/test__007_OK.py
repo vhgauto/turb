@@ -13,9 +13,6 @@ from datetime import datetime, timedelta
 # acceso a las credenciales
 import os
 
-# leo las credenciales, almacenadas en el archivo .env
-from dotenv import load_dotenv
-
 # acceso al token
 import certifi
 
