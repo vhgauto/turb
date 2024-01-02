@@ -4,7 +4,7 @@ on: [push]
   # schedule:
   # - cron: '0 10 * * *'
 jobs:
-  Ejecuto-Proyecto-GISTAQ-SAMEEP-2020:
+  Ejecuto-Proyecto-GISTAQ-SAMEEP-2024:
     runs-on: ubuntu-latest
     defaults:
       run:
