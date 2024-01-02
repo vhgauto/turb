@@ -3,6 +3,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
+  - python=3.12.1
   - requests=2.31.0
   - pandas=2.1.4
   - certifi=2023.11.17
