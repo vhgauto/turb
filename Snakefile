@@ -1,4 +1,4 @@
-rule test_secreto:
+rule descarga_xml:
     input:
         script = "scripts/test__007_OK.py"
     output:
