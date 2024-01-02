@@ -1,7 +1,3 @@
-rule targets:
-    input:
-        "scripts/test__007_OK.py"
-
 rule test_secreto:
     input:
         script = "scripts/run.bash"
