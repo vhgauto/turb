@@ -26,9 +26,6 @@ from datetime import datetime, timedelta
 # acceso a las credenciales
 import os
 
-# leo las credenciales, almacenadas en el archivo .env
-from dotenv import load_dotenv
-
 # acceso al token
 import certifi
 
@@ -80,10 +77,6 @@ result = pd.DataFrame.from_dict(response["value"])
 
 
 # In[6]:
-
-
-# load the environment variables from .env
-load_dotenv()
 
 username = os.environ['S2MSI_USERNAME']
 password = os.environ['S2MSI_PASSWORD']
