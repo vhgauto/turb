@@ -6,6 +6,9 @@ on: [push]
 jobs:
   Ejecuto-Proyecto-GISTAQ-SAMEEP-2020:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
     env:
       S2MSI_USERNAME: ${{ secrets.S2MSI_USERNAME }}
       S2MSI_PASSWORD: ${{ secrets.S2MSI_PASSWORD }}
