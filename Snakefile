@@ -11,5 +11,5 @@ rule test_secreto:
         "environment.yml"
     shell:
         """
-        {input.script}
+        python {input.script}
         """
