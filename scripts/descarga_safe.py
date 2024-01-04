@@ -25,11 +25,11 @@ import json
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
 # fechas para la búsqueda de productos
-# fecha_i = datetime.today().strftime('%Y-%m-%d')
-# fecha_f = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
+fecha_i = datetime.today().strftime('%Y-%m-%d')
+fecha_f = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
 
-fecha_i = "2023-12-17"
-fecha_f = "2023-12-18"
+# fecha_i = "2023-12-17"
+# fecha_f = "2023-12-18"
 
 # parámetros de búsqueda: S2, L2A, cobertura de nubes, ROI, rango de fechas
 collection_name = "SENTINEL-2"
