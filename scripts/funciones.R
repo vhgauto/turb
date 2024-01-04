@@ -105,7 +105,7 @@ recorte <- function() {
   print(glue("\n\nImagen RGB guardada\n\n"))
 
   # elimino .zip y SAFE del producto
-  file.remove("safe/producto.zip")
+  # file.remove("safe/producto.zip")
   unlink(glue("safe/{safe}"), recursive = TRUE)
 
   # mensaje en consola
