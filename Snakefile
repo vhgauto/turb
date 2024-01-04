@@ -1,14 +1,11 @@
 rule targets:
     input:
         "scripts/descarga_safe.py",
-        "safe/producto.zip",
         "figuras/rgb.png"
 
 rule descarga_safe:
     input:
         script = "scripts/descarga_safe.py"
-    output:
-        file = "safe/producto.zip"
     conda:
         "environment.yml"
     shell:
