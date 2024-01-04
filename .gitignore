@@ -2,6 +2,9 @@
 .Rhistory
 .Rapp.history
 .snakemake/
+producto.zip
+producto2.zip
+safe/*
 
 # Session Data files
 .RData

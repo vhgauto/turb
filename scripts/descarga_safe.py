@@ -19,8 +19,7 @@ import certifi
 # lectura de JSON, se usa al obtener el token
 import json
 
-# para guardar archivo XML
-from pathlib import Path
+# https://documentation.dataspace.copernicus.eu/APIs/OData.html#query-collection-of-products
 
 # URL base del catálogo
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
@@ -48,8 +47,11 @@ response = requests.get(search_query).json()
 result = pd.DataFrame.from_dict(response["value"])
 
 # credenciales
-username = os.environ['S2MSI_USERNAME']
-password = os.environ['S2MSI_PASSWORD']
+# username = os.environ['S2MSI_USERNAME']
+# password = os.environ['S2MSI_PASSWORD']
+
+username = "victor.gauto@outlook.com"
+password = "kcQkEstz..nh;7L'HuO~"
 
 # obtengo el token
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
@@ -63,26 +65,30 @@ data = {
 response_cred = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
 access_token = json.loads(response_cred.text)["access_token"]
 
-# Select identifier of the first product
-product_identifier = result.iloc[0, 1]
-product_name = result.iloc[0, 2]
+# ID y nombre del producto a descargar
+producto_id = result["Id"][0]
+producto_nombre = result["Name"][0]
 
-print(product_identifier)
-print(product_name)
+print("ID del producto", producto_id)
+print("Nombre del producto", producto_nombre)
 
-# Establish session
+# https://documentation.dataspace.copernicus.eu/APIs/OData.html#product-download
+
+# URL de descarga del producto
+url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({producto_id})/$value"
+
+headers = {"Authorization": f"Bearer {access_token}"}
+
 session = requests.Session()
-session.headers["Authorization"] = f"Bearer {access_token}"
+session.headers.update(headers)
+response_prod = session.get(url, headers=headers, stream=True)
 
-# Nodes() method lets us traverse the directory tree and retrieve single file from the product
-url = f"{catalogue_odata_url}/Products({product_identifier})/Nodes({product_name})/Nodes(MTD_MSIL2A.xml)/$value"
-response = session.get(url, allow_redirects=False)
-while response.status_code in (301, 302, 303, 307):
-    url = response.headers["Location"]
-    response = session.get(url, allow_redirects=False)
+print("---DESCARGANDO PRODUCTO---")
 
-file = session.get(url, verify=False, allow_redirects=True)
+# descarga de .zip con SAFE
+with open("safe/producto.zip", "wb") as file:
+    for chunk in response_prod.iter_content(chunk_size=8192):
+        if chunk:
+            file.write(chunk)
 
-# Save the product in home directory
-outfile =  Path("MTD_MSIL2A.xml")
-outfile.write_bytes(file.content)
+print("---PRODUCTO DESCARGADO---")

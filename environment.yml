@@ -8,3 +8,7 @@ dependencies:
   - certifi=2023.11.17
   - snakemake=8.0.1
   - graphviz=9.0.0
+  - r-base=4.3.2
+  - r-tidyverse=2.0.0
+  - r-sf=1.0_15
+  - r-terra=1.7_65
