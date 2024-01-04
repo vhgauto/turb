@@ -1,7 +1,9 @@
-########### 1. Inicio ######################################
+# funciones para obtener un recorte del producto S2-MSI de la región alrededor
+# del Puente Chaco-Corrientes
 
+# cargo todos los paquetes necesarios
 paquetes <- function() {
-  library(sf)
+  # library(sf)
   library(terra)
   library(glue)
   library(tidyverse)
@@ -10,17 +12,21 @@ paquetes <- function() {
   glue("\n\nPaquetes cargados correctamente\n\n")
 }
 
+# extraigo el contenido del producto .zip
 extraigo_zip <- function(x) {
-  unzip(zipfile = "producto.zip", exdir = "safe/")
+  unzip(zipfile = "safe/producto.zip", exdir = "safe/")
 
   # mensaje en consola
   glue("\n\nProducto extraido\n\n")
 }
 
+# recorto el producto a la región de interés
 recorte <- function() {
   
+  # mensaje en consola
   print(glue("\n\nLeo el producto S2-MSI L2A\n\n"))
 
+  # nombre del producto y fecha
   safe <- list.files("safe/", pattern = "SAFE")
   safe_fecha <- str_sub(safe, start = 12, end = 19)
   
@@ -30,6 +36,7 @@ recorte <- function() {
   carpeta3 <- glue("{carpeta1}/{carpeta2}/IMG_DATA")
   carpeta4 <- glue("{carpeta1}/{carpeta2}/QI_DATA") # nubes
   
+  # carpetas con las resoluciones a 10m y 20m
   r10m <- list.files(glue("{carpeta3}/R10m"), full.names = TRUE)
   r20m <- list.files(glue("{carpeta3}/R20m"), full.names = TRUE)
   
@@ -58,12 +65,13 @@ recorte <- function() {
   lista_bandas <-  map(vector_bandas, rast)
   names(lista_bandas) <- bandas_nombres
   
+  # mensaje en consola
   print(glue("\n\nRecorto y reproyecto el producto\n\n"))
   
-  # vector para recortar los raster alrededor del puente
+  # vector para recortar los raster alrededor del Puente
   recorte_puente <- vect("vectores/recorte_puente.gpkg")
   
-  # recorte de cada elemento de la lista con el vector puente
+  # recorto cada elemento de la lista con el vector Puente
   lista_recortes <- map(
     .x = lista_bandas, 
     ~terra::crop(x = .x, y = recorte_puente))
@@ -78,12 +86,13 @@ recorte <- function() {
   lista_recortes$B12 <- project(lista_recortes$B12, lista_recortes$B02)
   lista_recortes$QA60 <- project(lista_recortes$QA60, lista_recortes$B02)
   
-  # creamos un stack con todas las bandas recortadas y la misma resolucion espacial (10m)
+  # stack con todas las bandas recortadas y la misma resolucion espacial (10m)
   stack_bandas <- rast(lista_recortes)
   
   # guardo stack recortado
   writeRaster(stack_bandas, glue("raster/{safe_fecha}.tif"), overwrite = TRUE)
   
+  # mensaje en consola
   print(glue("\n\nStack guardado\n\n"))
 
   # genero imagen RGB del stack
@@ -92,9 +101,13 @@ recorte <- function() {
     stack_bandas, r = 4, g = 3, b = 2, scale = 5e4, stretch = "lin")
   dev.off()
 
+  # mensaje en consola
+  print(glue("\n\nImagen RGB guardada\n\n"))
+
   # elimino .zip y SAFE del producto
   file.remove("safe/producto.zip")
   unlink(glue("safe/{safe}"), recursive = TRUE)
 
+  # mensaje en consola
   print(glue("\n\nElimino .zip y SAFE del producto\n\n"))
 }
