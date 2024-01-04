@@ -3,7 +3,6 @@
 
 # cargo todos los paquetes necesarios
 paquetes <- function() {
-  # library(sf)
   library(terra)
   library(glue)
   library(tidyverse)
@@ -13,15 +12,27 @@ paquetes <- function() {
 }
 
 # extraigo el contenido del producto .zip
-extraigo_zip <- function(x) {
+# extraigo_zip <- function(x) {
+
+#   # condición de ERROR
+#   if (file.exists("safe/producto.zip") == FALSE) {
+#      stop(print("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
+#   }
+
+#   unzip(zipfile = "safe/producto.zip", exdir = "safe/")
+
+#   # mensaje en consola
+#   glue("\n\nProducto extraido\n\n")
+# }
+
+# recorto el producto a la región de interés
+recorte_raster <- function() {
+  
+  # extraigo el producto .zip
   unzip(zipfile = "safe/producto.zip", exdir = "safe/")
 
   # mensaje en consola
-  glue("\n\nProducto extraido\n\n")
-}
-
-# recorto el producto a la región de interés
-recorte <- function() {
+  print(glue("\n\nProducto extraído\n\n"))
   
   # mensaje en consola
   print(glue("\n\nLeo el producto S2-MSI L2A\n\n"))
@@ -95,19 +106,42 @@ recorte <- function() {
   # mensaje en consola
   print(glue("\n\nStack guardado\n\n"))
 
-  # genero imagen RGB del stack
-  png("figuras/rgb.png", width = 1500, height = 1500, units = "px")
-  terra::plotRGB(
-    stack_bandas, r = 4, g = 3, b = 2, scale = 5e4, stretch = "lin")
-  dev.off()
-
-  # mensaje en consola
-  print(glue("\n\nImagen RGB guardada\n\n"))
-
   # elimino .zip y SAFE del producto
   # file.remove("safe/producto.zip")
   unlink(glue("safe/{safe}"), recursive = TRUE)
 
   # mensaje en consola
   print(glue("\n\nElimino .zip y SAFE del producto\n\n"))
+}
+
+# genero imagen RGB del stack
+imagen_rgb <- function() {
+
+  # vector de stacks descargados
+  vector_raster <- list.files("raster", full.names = TRUE) |>
+    sort() |>
+    rev()
+  
+  # leo el último stack
+  s <- rast(vector_raster[1])
+
+  # genero imagen RGB del stack
+  png("figuras/rgb.png", width = 1500, height = 1500, units = "px")
+  terra::plotRGB(
+    s, r = 4, g = 3, b = 2, scale = 5e4, stretch = "lin")
+  dev.off()
+
+  # mensaje en consola
+  print(glue("\n\nImagen RGB guardada\n\n"))
+
+}
+
+recorte <- function() {
+  # condición de ERROR
+  if (file.exists("safe/producto.zip") == FALSE) {
+     print("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n")
+  } else {
+     recorte_raster()
+  }
+
 }
