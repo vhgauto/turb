@@ -9,21 +9,8 @@ paquetes <- function() {
   
   # mensaje en consola
   glue("\n\nPaquetes cargados correctamente\n\n")
+
 }
-
-# extraigo el contenido del producto .zip
-# extraigo_zip <- function(x) {
-
-#   # condición de ERROR
-#   if (file.exists("safe/producto.zip") == FALSE) {
-#      stop(print("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
-#   }
-
-#   unzip(zipfile = "safe/producto.zip", exdir = "safe/")
-
-#   # mensaje en consola
-#   glue("\n\nProducto extraido\n\n")
-# }
 
 # recorto el producto a la región de interés
 recorte_raster <- function() {
@@ -112,10 +99,14 @@ recorte_raster <- function() {
 
   # mensaje en consola
   print(glue("\n\nElimino .zip y SAFE del producto\n\n"))
+
 }
 
 # genero imagen RGB del stack
 imagen_rgb <- function() {
+
+  # borro la carpeta con la imagen RGB
+  unlink("figuras", recursive = TRUE)
 
   # vector de stacks descargados
   vector_raster <- list.files("raster", full.names = TRUE) |>
@@ -126,6 +117,7 @@ imagen_rgb <- function() {
   s <- rast(vector_raster[1])
 
   # genero imagen RGB del stack
+  dir.create("figuras/")
   png("figuras/rgb.png", width = 1500, height = 1500, units = "px")
   terra::plotRGB(
     s, r = 4, g = 3, b = 2, scale = 5e4, stretch = "lin")
