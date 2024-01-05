@@ -25,11 +25,8 @@ import json
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
 # fechas para la búsqueda de productos
-fecha_i = datetime.today().strftime('%Y-%m-%d')
-fecha_f = (datetime.today() + timedelta(days=1)).strftime('%Y-%m-%d')
-
-# fecha_i = "2023-12-17"
-# fecha_f = "2023-12-18"
+fecha_i = (datetime.today() + timedelta(days=-1)).strftime('%Y-%m-%d')
+fecha_f = datetime.today().strftime('%Y-%m-%d')
 
 # parámetros de búsqueda: S2, L2A, cobertura de nubes, ROI, rango de fechas
 collection_name = "SENTINEL-2"
@@ -65,30 +62,34 @@ data = {
 response_cred = requests.post(auth_server_url, data=data, verify=True, allow_redirects=False)
 access_token = json.loads(response_cred.text)["access_token"]
 
-# ID y nombre del producto a descargar
-producto_id = result["Id"][0]
-producto_nombre = result["Name"][0]
+if len(result) == 0:
+    print("\n\n---NO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA---\n\n")
+else:
+    
+    # ID y nombre del producto a descargar
+    producto_id = result["Id"][0]
+    producto_nombre = result["Name"][0]
 
-print("ID del producto", producto_id)
-print("Nombre del producto", producto_nombre)
+    print("ID del producto", producto_id)
+    print("Nombre del producto", producto_nombre)
 
-# https://documentation.dataspace.copernicus.eu/APIs/OData.html#product-download
+    # https://documentation.dataspace.copernicus.eu/APIs/OData.html#product-download
 
-# URL de descarga del producto
-url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({producto_id})/$value"
+    # URL de descarga del producto
+    url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({producto_id})/$value"
 
-headers = {"Authorization": f"Bearer {access_token}"}
+    headers = {"Authorization": f"Bearer {access_token}"}
 
-session = requests.Session()
-session.headers.update(headers)
-response_prod = session.get(url, headers=headers, stream=True)
+    session = requests.Session()
+    session.headers.update(headers)
+    response_prod = session.get(url, headers=headers, stream=True)
 
-print("---DESCARGANDO PRODUCTO---")
+    print("\n\n---DESCARGANDO PRODUCTO---\n\n")
+    # descarga de .zip con SAFE
 
-# descarga de .zip con SAFE
-with open("safe/producto.zip", "wb") as file:
-    for chunk in response_prod.iter_content(chunk_size=8192):
-        if chunk:
-            file.write(chunk)
+    with open("safe/producto.zip", "wb") as file:
+        for chunk in response_prod.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
 
-print("---PRODUCTO DESCARGADO---")
+    print("\n\n---PRODUCTO DESCARGADO---\n\n")

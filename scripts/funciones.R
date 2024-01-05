@@ -100,6 +100,16 @@ recorte_raster <- function() {
   # mensaje en consola
   print(glue("\n\nElimino .zip y SAFE del producto\n\n"))
 
+  # creo tibble con las fechas procesadas
+  d <- tibble(fecha = ymd(safe_fecha))
+  
+  # leo fechas previas
+  d_previo <- read_csv("datos/fechas_descargadas.csv")
+
+  # combino y guardo
+  bind_rows(d_previo, d) |>
+    write_csv("datos/fechas_descargadas.csv")
+
 }
 
 # genero imagen RGB del stack
@@ -131,7 +141,7 @@ imagen_rgb <- function() {
 recorte <- function() {
   # condición de ERROR
   if (file.exists("safe/producto.zip") == FALSE) {
-     print("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n")
+     print(glue("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
   } else {
      recorte_raster()
   }
