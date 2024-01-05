@@ -6,7 +6,7 @@ paquetes <- function() {
   library(terra)
   library(glue)
   library(tidyverse)
-  
+
   # mensaje en consola
   glue("\n\nPaquetes cargados correctamente\n\n")
 
@@ -14,34 +14,35 @@ paquetes <- function() {
 
 # recorto el producto a la región de interés
 recorte_raster <- function() {
-  
+
   # extraigo el producto .zip
   unzip(zipfile = "safe/producto.zip", exdir = "safe/")
 
   # mensaje en consola
   print(glue("\n\nProducto extraído\n\n"))
-  
+
   # mensaje en consola
   print(glue("\n\nLeo el producto S2-MSI L2A\n\n"))
 
   # nombre del producto y fecha
   safe <- list.files("safe/", pattern = "SAFE")
   safe_fecha <- str_sub(safe, start = 12, end = 19)
-  
+
   # carpeta con las carpetas de distintas resoluciones
   carpeta1 <- glue("safe/{safe}/GRANULE")
   carpeta2 <- list.files(carpeta1)
   carpeta3 <- glue("{carpeta1}/{carpeta2}/IMG_DATA")
   carpeta4 <- glue("{carpeta1}/{carpeta2}/QI_DATA") # nubes
-  
+
   # carpetas con las resoluciones a 10m y 20m
   r10m <- list.files(glue("{carpeta3}/R10m"), full.names = TRUE)
   r20m <- list.files(glue("{carpeta3}/R20m"), full.names = TRUE)
-  
+
   # nombres de las bandas en el orden correcto
-  bandas_nombres <- c("B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", 
-    "B11", "B12", "QA60")
-  
+  bandas_nombres <- c(
+    "B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B11",
+    "B12", "QA60")
+
   # caminos para cada archivo de la banda requerida
   b01 <- r20m[2]
   b02 <- r10m[2]
@@ -55,25 +56,25 @@ recorte_raster <- function() {
   b11 <- r20m[9]
   b12 <- r20m[10]
   qa60 <- glue("{carpeta4}/MSK_CLDPRB_20m.jp2") # nubes
-  
+
   # vector de los caminos de los archivos en el orden correcto
   vector_bandas <- c(b01, b02, b03, b04, b05, b06, b07, b08, b8a, b11, b12, qa60)
-  
+
   # leo los archivos
   lista_bandas <-  map(vector_bandas, rast)
   names(lista_bandas) <- bandas_nombres
-  
+
   # mensaje en consola
   print(glue("\n\nRecorto y reproyecto el producto\n\n"))
-  
+
   # vector para recortar los raster alrededor del Puente
   recorte_puente <- vect("vectores/recorte_puente.gpkg")
-  
+
   # recorto cada elemento de la lista con el vector Puente
   lista_recortes <- map(
-    .x = lista_bandas, 
+    .x = lista_bandas,
     ~terra::crop(x = .x, y = recorte_puente))
-  
+
   # los raster de 20m los reproyecto a 10m
   lista_recortes$B01 <- project(lista_recortes$B01, lista_recortes$B02)
   lista_recortes$B05 <- project(lista_recortes$B05, lista_recortes$B02)
@@ -94,7 +95,6 @@ recorte_raster <- function() {
   print(glue("\n\nStack guardado\n\n"))
 
   # elimino .zip y SAFE del producto
-  # file.remove("safe/producto.zip")
   unlink(glue("safe/{safe}"), recursive = TRUE)
 
   # mensaje en consola
@@ -102,7 +102,9 @@ recorte_raster <- function() {
 
   # creo tibble con las fechas procesadas
   d <- tibble(fecha = ymd(safe_fecha))
-  
+
+  write_csv(d, "datos/fecha_actual.csv")
+
   # leo fechas previas
   d_previo <- read_csv("datos/fechas_descargadas.csv")
 
@@ -141,9 +143,9 @@ imagen_rgb <- function() {
 recorte <- function() {
   # condición de ERROR
   if (file.exists("safe/producto.zip") == FALSE) {
-     print(glue("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
+    print(glue("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
   } else {
-     recorte_raster()
+    recorte_raster()
   }
 
 }

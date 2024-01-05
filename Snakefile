@@ -1,7 +1,7 @@
 rule targets:
     input:
         "figuras/rgb.png",
-        "datos/fechas_descargadas.csv"
+        "datos/fecha_actual.csv"
 
 rule descarga_safe:
     input:
@@ -17,9 +17,10 @@ rule descarga_safe:
 
 rule recorte_producto:
     input:
-        script = "scripts/recorte_producto.R"
+        script = "scripts/recorte_producto.R",
+        file = "figuras/rgb.png"
     output:
-        file = "datos/fechas_descargadas.csv"
+        file = "datos/fecha_actual.csv"
     conda:
         "environment.yml"
     shell:

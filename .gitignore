@@ -5,6 +5,7 @@
 producto.zip
 producto2.zip
 safe/*
+fechas_descargadas.csv
 
 # Session Data files
 .RData

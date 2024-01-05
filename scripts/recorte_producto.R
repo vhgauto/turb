@@ -8,6 +8,3 @@ paquetes()
 
 # recorto el producto a roi y guardo stack
 recorte()
-
-# genero imagen RGB
-imagen_rgb()
