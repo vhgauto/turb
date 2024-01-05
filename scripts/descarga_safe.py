@@ -44,11 +44,11 @@ response = requests.get(search_query).json()
 result = pd.DataFrame.from_dict(response["value"])
 
 # credenciales
-# username = os.environ['S2MSI_USERNAME']
-# password = os.environ['S2MSI_PASSWORD']
+username = os.environ['S2MSI_USERNAME']
+password = os.environ['S2MSI_PASSWORD']
 
-username = "victor.gauto@outlook.com"
-password = "kcQkEstz..nh;7L'HuO~"
+# username = "victor.gauto@outlook.com"
+# password = "kcQkEstz..nh;7L'HuO~"
 
 # obtengo el token
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
