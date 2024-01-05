@@ -33,6 +33,6 @@ jobs:
       - name: Commit de los cambios en el repositorio
         run: |
           git add .
-          git commit -m "Última valor de turbidez estimada"
+          git commit --allow-empty -m "Producto procesado e imagen creada"
           git push origin main
       - run: echo "🍏 El estado final es = ${{ job.status }}."
