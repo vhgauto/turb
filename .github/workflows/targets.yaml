@@ -23,14 +23,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-on:
-  push:
-    branches:
-      - main
-      - master
+name: Ejecuto el Proyecto GISTAQ-SAMEEP
+run-name: ${{ github.actor }} está ejecutando snakemake 🐍
+on: [push]
+  # schedule:
+  # - cron: '0 23 * * *'
 
-name: targets
-
+jobs:
+  Ejecuto-Proyecto-GISTAQ-SAMEEP-2024:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    env:
+      S2MSI_USERNAME: ${{ secrets.S2MSI_USERNAME }}
+      S2MSI_PASSWORD: ${{ secrets.S2MSI_PASSWORD }}
+    steps:
+      - run: echo "🎉 Tareas activadas automáticamente debido a un evento ${{ github.event_name }}"
+      - run: echo "🐧 Las tareas están corriendo en un servidor ${{ runner.os }} alojado en GitHub"
+      - run: echo "🔎 El nombre del branch es ${{ github.ref }} y su repositorio es ${{ github.repository }}"
+      - name: Verificar el código del repositorio
+        uses: actions/checkout@v3
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: turb
+          environment-file: environment.yml
+          auto-activate-base: false
+          
 jobs:
   targets:
     runs-on: ubuntu-latest
@@ -93,40 +112,14 @@ jobs:
         run: targets::tar_make()
         shell: Rscript {0}
 
-      - name: Identify files that the targets pipeline produced
-        run: git ls-files -mo --exclude=renv > .targets-files
-
-      - name: Create the runs branch if it does not already exist
-        if: steps.runs-exist.outcome != 'success'
-        run: git checkout --orphan targets-runs
-
-      - name: Put the worktree in the runs branch if the latter already exists
-        if: steps.runs-exist.outcome == 'success'
+      - name: Configuro git en el runner
         run: |
-          rm -r .git
-          mv .targets-runs/.git .
-          rm -r .targets-runs
-
-      - name: Upload latest run
+          git config --local user.email "noreply@github.com"
+          git config --local user.name "GitHub"
+      - name: Commit de los cambios en el repositorio
         run: |
-          git config --local user.name "GitHub Actions"
-          git config --local user.email "actions@github.com"
-          rm -r .gitignore .github/workflows
-          git add --all -- ':!renv'
-          for file in $(git ls-files -mo --exclude=renv)
-          do
-            git add --force $file
-          done
-          git commit -am "Run pipeline"
-          git push origin targets-runs
+          git add .
+          git commit --allow-empty -m "Producto procesado e imagen creada"
+          git push origin main
+      - run: echo "🍏 El estado final es = ${{ job.status }}."
 
-      - name: Prepare failure artifact
-        if: failure()
-        run: rm -rf .git .github .targets-files .targets-runs
-
-      - name: Post failure artifact
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: .

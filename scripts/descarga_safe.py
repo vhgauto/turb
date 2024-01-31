@@ -25,11 +25,13 @@ import json
 catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 
 # fechas para la búsqueda de productos
-fecha_i = (datetime.today() + timedelta(days=-1)).strftime('%Y-%m-%d')
-fecha_f = datetime.today().strftime('%Y-%m-%d')
+# fecha_i = (datetime.today() + timedelta(days=-1)).strftime('%Y-%m-%d')
+# fecha_f = datetime.today().strftime('%Y-%m-%d')
 
-# fecha_i = "2024-01-01"
-# fecha_f = "2024-01-02"
+# producto: S2B_MSIL2A_20240126T135659_N0510_R067_T21JUK_20240126T175256.SAFE
+
+fecha_i = "2024-01-26"
+fecha_f = "2024-01-27"
 
 # parámetros de búsqueda: S2, L2A, cobertura de nubes, ROI, rango de fechas
 collection_name = "SENTINEL-2"
@@ -47,11 +49,11 @@ response = requests.get(search_query).json()
 result = pd.DataFrame.from_dict(response["value"])
 
 # credenciales
-# username = os.environ['S2MSI_USERNAME']
-# password = os.environ['S2MSI_PASSWORD']
+username = os.environ['S2MSI_USERNAME']
+password = os.environ['S2MSI_PASSWORD']
 
-username = "victor.gauto@outlook.com"
-password = "kcQkEstz..nh;7L'HuO~"
+# username = "victor.gauto@outlook.com"
+# password = "kcQkEstz..nh;7L'HuO~"
 
 # obtengo el token
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"

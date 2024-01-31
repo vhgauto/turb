@@ -23,16 +23,20 @@ jobs:
           activate-environment: turb
           environment-file: environment.yml
           auto-activate-base: false
+          
+      - name: Run targets pipeline
+        run: targets::tar_make()
+        shell: Rscript {0}
       # - name: corro SNAKEMAKE
       #   run: |
       #     snakemake -c 1
-      - name: secuencia Snakemake
-        uses: snakemake/snakemake-github-action@v1
-        with:
-          directory: '.'
-          snakefile: 'Snakefile'
-          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
-          stagein: '' # additional preliminary commands to run (can be multiline)}
+      # - name: secuencia Snakemake
+      #   uses: snakemake/snakemake-github-action@v1
+      #   with:
+      #     directory: '.'
+      #     snakefile: 'Snakefile'
+      #     args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+      #     stagein: '' # additional preliminary commands to run (can be multiline)}
       - name: Configuro git en el runner
         run: |
           git config --local user.email "noreply@github.com"
