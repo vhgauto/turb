@@ -28,6 +28,9 @@ catalogue_odata_url = "https://catalogue.dataspace.copernicus.eu/odata/v1"
 fecha_i = (datetime.today() + timedelta(days=-1)).strftime('%Y-%m-%d')
 fecha_f = datetime.today().strftime('%Y-%m-%d')
 
+# fecha_i = "2024-01-01"
+# fecha_f = "2024-01-02"
+
 # parámetros de búsqueda: S2, L2A, cobertura de nubes, ROI, rango de fechas
 collection_name = "SENTINEL-2"
 product_type = "S2MSI2A"
@@ -44,11 +47,11 @@ response = requests.get(search_query).json()
 result = pd.DataFrame.from_dict(response["value"])
 
 # credenciales
-username = os.environ['S2MSI_USERNAME']
-password = os.environ['S2MSI_PASSWORD']
+# username = os.environ['S2MSI_USERNAME']
+# password = os.environ['S2MSI_PASSWORD']
 
-# username = "victor.gauto@outlook.com"
-# password = "kcQkEstz..nh;7L'HuO~"
+username = "victor.gauto@outlook.com"
+password = "kcQkEstz..nh;7L'HuO~"
 
 # obtengo el token
 auth_server_url = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
@@ -64,6 +67,8 @@ access_token = json.loads(response_cred.text)["access_token"]
 
 if len(result) == 0:
     print("\n\n---NO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA---\n\n")
+elif os.path.isfile("safe/producto.zip") == True:
+    print("\n\n---PRODUCTO YA DESCARGADO---\n\n")
 else:
     
     # ID y nombre del producto a descargar
@@ -93,3 +98,6 @@ else:
                 file.write(chunk)
 
     print("\n\n---PRODUCTO DESCARGADO---\n\n")
+
+"safe/producto.zip"
+

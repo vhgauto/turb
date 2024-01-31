@@ -1,0 +1,11 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+archivo_tif|stem|c87cd9477a8c5456|f55bde1f5453a293|77ff9da2e97a2494|1098703992|raster/producto.tif|t19730.811095512s|381b4163071a108f|1519873|file|local|vector|||0||
+archivo_zip|stem|ef46db3751d8e999|224913d9fbf3ade8|6ffdb0badfc135aa|-1458500348|safe/producto.zip|t19730.8158892602s|f4066a65ff755f48|0|file|local|vector|||0||
+creo_rgb|function|7055668c01f76041|||||||||||||||
+creo_stack|function|3af155c798554494|||||||||||||||
+descarga_s2|stem|a30422f45fe736f0|fb23b4164d7b02a5|a07b71b8416482fa|141904867||t19730.8298641957s|21c64f85d8c4a821|70|rds|local|vector|||6.203|package terra was built under R version 4.3.2. package dplyr was built under R version 4.3.2. package stringr was built under R version 4.3.2|
+descarga_safe|function|bb4f2010953bff47|||||||||||||||
+path_data|function|034845a97056002c|||||||||||||||
+producto_tif|stem|559bf7304e1ffb16|2c56f400b78f9cb5|298960d5fda5c193|-1561283483||t19730.8298644779s|c6fbfb9abe15abfd|72|rds|local|vector|||0||
+recorte_raster|function|a16e818f3606906e|||||||||||||||
+rgb_png|stem|40858a0c7e36e120|c146be2b72ec17f3|2373515b401d0f83|-1104440379||t19730.8298740675s|d586f792a395948c|68|rds|local|vector|||0.828||

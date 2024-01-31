@@ -1,14 +1,35 @@
 # funciones para obtener un recorte del producto S2-MSI de la región alrededor
 # del Puente Chaco-Corrientes
 
-# cargo todos los paquetes necesarios
-paquetes <- function() {
-  library(terra)
-  library(glue)
-  library(tidyverse)
+# https://raps-with-r.dev/targets.html#handling-files
+path_data <- function(path){
+  path
+}
 
-  # mensaje en consola
-  glue("\n\nPaquetes cargados correctamente\n\n")
+# función para correr script en python que descarga SAFE y devuelve path del
+# .zip
+descarga_safe <- function() {
+  
+  # resultado deseado
+  archivo_zip <- "safe/producto.zip"
+  
+  print(glue("\n\n---PYTHON SCRIPT DESCARGA S2-MSI---\n\n"))
+
+  system("python scripts/descarga_safe.py")
+
+  # sino se descargó nada, creo un archivo vacío
+  if (file.exists(archivo_zip) == TRUE) {
+    
+    print(glue("\n\n---.ZIP DISPONIBLE---\n\n"))
+    
+  } else {
+    
+    # creo archivo vacío
+    file.create(archivo_zip)
+    
+  }
+  
+  return(archivo_zip)
 
 }
 
@@ -19,10 +40,10 @@ recorte_raster <- function() {
   unzip(zipfile = "safe/producto.zip", exdir = "safe/")
 
   # mensaje en consola
-  print(glue("\n\nProducto extraído\n\n"))
+  print(glue("\n\n---Producto extraído---\n\n"))
 
   # mensaje en consola
-  print(glue("\n\nLeo el producto S2-MSI L2A\n\n"))
+  print(glue("\n\n---Leo el producto S2-MSI L2A---\n\n"))
 
   # nombre del producto y fecha
   safe <- list.files("safe/", pattern = "SAFE")
@@ -65,7 +86,7 @@ recorte_raster <- function() {
   names(lista_bandas) <- bandas_nombres
 
   # mensaje en consola
-  print(glue("\n\nRecorto y reproyecto el producto\n\n"))
+  print(glue("\n\n---Recorto y reproyecto el producto---\n\n"))
 
   # vector para recortar los raster alrededor del Puente
   recorte_puente <- vect("vectores/recorte_puente.gpkg")
@@ -90,15 +111,16 @@ recorte_raster <- function() {
   
   # guardo stack recortado
   writeRaster(stack_bandas, glue("raster/{safe_fecha}.tif"), overwrite = TRUE)
+  writeRaster(stack_bandas, "raster/producto.tif", overwrite = TRUE)
   
   # mensaje en consola
-  print(glue("\n\nStack guardado\n\n"))
+  print(glue("\n\n---Stack guardado---\n\n"))
 
   # elimino .zip y SAFE del producto
-  unlink(glue("safe/{safe}"), recursive = TRUE)
+  # unlink("safe/*", recursive = TRUE)
 
   # mensaje en consola
-  print(glue("\n\nElimino .zip y SAFE del producto\n\n"))
+  print(glue("\n\n---Elimino .zip y SAFE del producto---\n\n"))
 
   # creo tibble con las fechas procesadas
   d <- tibble(fecha = ymd(safe_fecha))
@@ -115,18 +137,13 @@ recorte_raster <- function() {
 }
 
 # genero imagen RGB del stack
-imagen_rgb <- function() {
+creo_rgb <- function(x) {
 
   # borro la carpeta con la imagen RGB
   unlink("figuras", recursive = TRUE)
-
-  # vector de stacks descargados
-  vector_raster <- list.files("raster", full.names = TRUE) |>
-    sort() |>
-    rev()
   
   # leo el último stack
-  s <- rast(vector_raster[1])
+  s <- rast(x)
 
   # genero imagen RGB del stack
   dir.create("figuras/")
@@ -136,16 +153,33 @@ imagen_rgb <- function() {
   dev.off()
 
   # mensaje en consola
-  print(glue("\n\nImagen RGB guardada\n\n"))
+  print(glue("\n\n---Imagen RGB guardada---\n\n"))
+  
+  # https://raps-with-r.dev/targets.html#a-pipeline-is-a-composition-of-pure-functions
+  
+  archivo_png <- "figuras/rgb.png"
+  
+  return(archivo_png)
 
 }
 
-recorte <- function() {
+creo_stack <- function(x) {
+  
+  archivo_size <- file.info(x)$size
+  
   # condición de ERROR
-  if (file.exists("safe/producto.zip") == FALSE) {
-    print(glue("\n\nNO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA\n\n"))
+  if (archivo_size == 0) {
+    
+    print(glue("\n\n---NO HAY PRODUCTO DISPONIBLE PARA EL DÍA DE LA FECHA---\n\n"))
+    
   } else {
+    
     recorte_raster()
+    
   }
+  
+  archivo_tif <- "raster/producto.tif"
+  
+  return(archivo_tif)
 
 }

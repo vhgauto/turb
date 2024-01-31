@@ -10,5 +10,10 @@ dependencies:
   - graphviz=9.0.0
   - r-base=4.3.2
   - r-tidyverse=2.0.0
-  # - r-sf=1.0_15
   - r-terra=1.7_65
+  - r-targets=1.4.0
+  - r-future=1.33.1
+  - r-batchtools=0.9.17
+  - r-future.callr=0.8.2
+  - r-usethis=2.2.2
+  - r-visnetwork=2.1.2
